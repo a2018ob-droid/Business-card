@@ -191,6 +191,26 @@
             margin-top: 12px;
         }
 
+        /* رسالة إرشادية لأندرويد */
+        .android-message {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 16px;
+            margin: 15px 0;
+            border-right: 4px solid #8B7D3C;
+            display: none;
+        }
+
+        .android-message.show {
+            display: block;
+        }
+
+        .android-message p {
+            color: #2c2c2c;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+
         @media (max-width: 500px) {
             .card-body {
                 padding: 20px;
@@ -215,6 +235,7 @@
             <div class="contact-name">عبدالله البلوشي</div>
             <div class="job-title">منسق المعرض</div>
 
+            <!-- حفظ VCF -->
             <div class="info-row">
                 <div class="info-icon"><i class="fas fa-address-card"></i></div>
                 <div class="info-text">
@@ -224,6 +245,14 @@
                 </div>
             </div>
 
+            <!-- رسالة إرشادية لأندرويد -->
+            <div id="androidMessage" class="android-message">
+                <p><i class="fas fa-info-circle"></i> <strong>طريقة حفظ جهة الاتصال على أندرويد:</strong></p>
+                <p>1️⃣ سيتم تحميل الملف إلى مجلد "Downloads"<br>
+                2️⃣ افتح تطبيق <strong>جهات الاتصال</strong> ← <strong>استيراد</strong> ← اختر الملف المحمّل</p>
+            </div>
+
+            <!-- واتساب -->
             <div class="info-row">
                 <div class="info-icon"><i class="fab fa-whatsapp"></i></div>
                 <div class="info-text">
@@ -233,6 +262,7 @@
                 </div>
             </div>
 
+            <!-- البريد الإلكتروني -->
             <div class="info-row">
                 <div class="info-icon"><i class="far fa-envelope"></i></div>
                 <div class="info-text">
@@ -240,6 +270,7 @@
                 </div>
             </div>
 
+            <!-- موقع الويب -->
             <div class="info-row">
                 <div class="info-icon"><i class="fas fa-globe"></i></div>
                 <div class="info-text">
@@ -257,16 +288,18 @@
     </div>
 
     <script>
+        // بيانات الاتصال
         const contactData = {
             fullName: "عبدالله البلوشي",
-            phone: "+966555822559",
+            phone: "0555822559",  // رقم بدون رمز دولة
             email: "abdullah@basqat.com.sa",
             company: "باسقات الجزيرة للتمور والحلويات",
             jobTitle: "منسق المعرض",
             website: "https://basiqataljazira.com/ar"
         };
 
-        function generateVCF() {
+        // إنشاء نص vCard
+        function getVCardString() {
             return `BEGIN:VCARD
 VERSION:3.0
 FN:${contactData.fullName}
@@ -278,17 +311,42 @@ URL:${contactData.website}
 END:VCARD`;
         }
 
-        document.getElementById('saveVcfBtn').addEventListener('click', function () {
-            const vcfData = generateVCF();
+        // التحقق من نظام التشغيل
+        function isIOS() {
+            return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        }
+
+        // زر حفظ VCF
+        document.getElementById('saveVcfBtn').addEventListener('click', function() {
+            const vcfData = getVCardString();
             const blob = new Blob([vcfData], { type: 'text/vcard' });
             const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'abdullah_basqat.vcf';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            
+            if (isIOS()) {
+                // iOS: فتح الملف مباشرة
+                window.location.href = url;
+                setTimeout(() => {
+                    URL.revokeObjectURL(url);
+                }, 1000);
+            } else {
+                // Android والأنظمة الأخرى: تحميل الملف مع إظهار رسالة إرشادية
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'abdullah_basqat.vcf';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                // إظهار رسالة أندرويد
+                const msgDiv = document.getElementById('androidMessage');
+                msgDiv.classList.add('show');
+                
+                // إخفاء الرسالة بعد 8 ثوانٍ
+                setTimeout(() => {
+                    msgDiv.classList.remove('show');
+                }, 8000);
+            }
         });
     </script>
 </body>
