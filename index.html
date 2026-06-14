@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>باسقات الجزيرة للتمور والحلويات - عبدالله البلوشي</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -191,6 +192,56 @@
             margin-top: 12px;
         }
 
+        /* تنسيق رسالة أندرويد */
+        .android-message {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 16px;
+            margin: 15px 0;
+            border-right: 4px solid #8B7D3C;
+            display: none;
+        }
+
+        .android-message.show {
+            display: block;
+        }
+
+        .android-message p {
+            color: #2c2c2c;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+
+        .qr-container {
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .qr-container.show {
+            display: block;
+        }
+
+        #qrcode {
+            display: inline-flex;
+            justify-content: center;
+            background: white;
+            padding: 10px;
+            border-radius: 16px;
+            margin: 10px 0;
+        }
+
+        .toggle-qr-btn {
+            background: none;
+            border: 1px solid #8B7D3C;
+            color: #8B7D3C;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
         @media (max-width: 500px) {
             .card-body {
                 padding: 20px;
@@ -215,6 +266,7 @@
             <div class="contact-name">عبدالله البلوشي</div>
             <div class="job-title">منسق المعرض</div>
 
+            <!-- حفظ VCF المحسن -->
             <div class="info-row">
                 <div class="info-icon"><i class="fas fa-address-card"></i></div>
                 <div class="info-text">
@@ -224,6 +276,31 @@
                 </div>
             </div>
 
+            <!-- رسالة إرشادية لأندرويد -->
+            <div id="androidMessage" class="android-message">
+                <p><i class="fas fa-info-circle"></i> <strong>طريقة حفظ جهة الاتصال على أندرويد:</strong></p>
+                <p>1️⃣ سيتم تحميل الملف إلى مجلد "Downloads"<br>
+                2️⃣ افتح تطبيق <strong>جهات الاتصال</strong> ← <strong>استيراد</strong> ← اختر الملف المحمّل</p>
+                <p><small>💡 بديل أسرع: استخدم رمز QR أدناه</small></p>
+            </div>
+
+            <!-- زر إظهار رمز QR -->
+            <div class="info-row">
+                <div class="info-icon"><i class="fas fa-qrcode"></i></div>
+                <div class="info-text">
+                    <button class="toggle-qr-btn" id="toggleQrBtn">
+                        <i class="fas fa-qrcode"></i> إظهار رمز QR للحفظ التلقائي
+                    </button>
+                </div>
+            </div>
+
+            <!-- حاوية رمز QR -->
+            <div id="qrContainer" class="qr-container">
+                <div id="qrcode"></div>
+                <p style="font-size: 0.7rem; color: #666; margin-top: 5px;">📱 امسح الرمز بكاميرا هاتفك لحفظ جهة الاتصال تلقائياً</p>
+            </div>
+
+            <!-- واتساب -->
             <div class="info-row">
                 <div class="info-icon"><i class="fab fa-whatsapp"></i></div>
                 <div class="info-text">
@@ -233,6 +310,7 @@
                 </div>
             </div>
 
+            <!-- البريد الإلكتروني -->
             <div class="info-row">
                 <div class="info-icon"><i class="far fa-envelope"></i></div>
                 <div class="info-text">
@@ -240,6 +318,7 @@
                 </div>
             </div>
 
+            <!-- موقع الويب -->
             <div class="info-row">
                 <div class="info-icon"><i class="fas fa-globe"></i></div>
                 <div class="info-text">
@@ -257,6 +336,7 @@
     </div>
 
     <script>
+        // بيانات الاتصال
         const contactData = {
             fullName: "عبدالله البلوشي",
             phone: "+966555822559",
@@ -266,7 +346,8 @@
             website: "https://basiqataljazira.com/ar"
         };
 
-        function generateVCF() {
+        // إنشاء نص vCard
+        function getVCardString() {
             return `BEGIN:VCARD
 VERSION:3.0
 FN:${contactData.fullName}
@@ -278,18 +359,96 @@ URL:${contactData.website}
 END:VCARD`;
         }
 
-        document.getElementById('saveVcfBtn').addEventListener('click', function () {
-            const vcfData = generateVCF();
+        // التحقق من نظام التشغيل
+        function isIOS() {
+            return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        }
+
+        function isAndroid() {
+            return /Android/i.test(navigator.userAgent);
+        }
+
+        // زر حفظ VCF - سلوك مختلف لكل نظام
+        document.getElementById('saveVcfBtn').addEventListener('click', function() {
+            const vcfData = getVCardString();
             const blob = new Blob([vcfData], { type: 'text/vcard' });
             const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'abdullah_basqat.vcf';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            
+            if (isIOS()) {
+                // iOS: يحاول فتح الملف مباشرة
+                window.location.href = url;
+                setTimeout(() => {
+                    URL.revokeObjectURL(url);
+                }, 1000);
+            } else {
+                // Android والأنظمة الأخرى: تحميل الملف مع إظهار رسالة إرشادية
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'abdullah_basqat.vcf';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                // إظهار رسالة أندرويد
+                const msgDiv = document.getElementById('androidMessage');
+                msgDiv.classList.add('show');
+                
+                // إخفاء الرسالة بعد 8 ثوانٍ
+                setTimeout(() => {
+                    msgDiv.classList.remove('show');
+                }, 8000);
+            }
         });
+
+        // إنشاء رمز QR يحتوي على vCard
+        let qrCreated = false;
+        
+        function createQRCode() {
+            if (qrCreated) return;
+            
+            const vcardString = getVCardString();
+            // encodeURIComponent للروابط الطويلة
+            const encodedVCard = encodeURIComponent(vcardString);
+            // إنشاء رابط بيانات vCard (يعمل على iOS مباشرة، وعلى أندرويد عبر تطبيقات QR)
+            const qrData = `data:text/vcard;charset=utf-8,${encodedVCard}`;
+            
+            new QRCode(document.getElementById("qrcode"), {
+                text: qrData,
+                width: 150,
+                height: 150,
+                colorDark: "#2c2c2c",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+            qrCreated = true;
+        }
+
+        // إظهار/إخفاء رمز QR
+        const toggleBtn = document.getElementById('toggleQrBtn');
+        const qrContainer = document.getElementById('qrContainer');
+        
+        toggleBtn.addEventListener('click', function() {
+            if (qrContainer.classList.contains('show')) {
+                qrContainer.classList.remove('show');
+                toggleBtn.innerHTML = '<i class="fas fa-qrcode"></i> إظهار رمز QR للحفظ التلقائي';
+            } else {
+                qrContainer.classList.add('show');
+                toggleBtn.innerHTML = '<i class="fas fa-times"></i> إخفاء رمز QR';
+                createQRCode();
+            }
+        });
+
+        // إذا كان المستخدم على أندرويد، نظهر له رسالة عند تحميل الصفحة
+        if (isAndroid()) {
+            setTimeout(() => {
+                const msgDiv = document.getElementById('androidMessage');
+                msgDiv.classList.add('show');
+                setTimeout(() => {
+                    msgDiv.classList.remove('show');
+                }, 10000);
+            }, 1000);
+        }
     </script>
 </body>
 </html>
