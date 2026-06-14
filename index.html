@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>باسقات الجزيرة - عبدالله البلوشي</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e2a1a, #3a4d30);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+            direction: rtl;
+            padding: 20px;
+        }
+
+        .business-card {
+            width: 650px;
+            max-width: 100%;
+            background: #FFFFFF;
+            border-radius: 32px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(139, 125, 60, 0.2);
+            overflow: hidden;
+            transition: transform 0.25s ease;
+        }
+
+        .business-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #8B7D3C, #C9A96E);
+            padding: 22px 25px;
+            text-align: center;
+        }
+
+        .logo-text {
+            font-size: 1.9rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: white;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .logo-sub {
+            font-size: 0.8rem;
+            color: rgba(255,255,240,0.95);
+            margin-top: 6px;
+            font-weight: 400;
+        }
+
+        .card-body {
+            padding: 28px 30px;
+            background: #FFFFFF;
+        }
+
+        .contact-name {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e2a1a;
+            border-right: 5px solid #C9A96E;
+            padding-right: 16px;
+            margin-bottom: 8px;
+        }
+
+        .job-title {
+            font-size: 1rem;
+            color: #8B7D3C;
+            font-weight: 600;
+            margin-bottom: 25px;
+            padding-right: 21px;
+            letter-spacing: 0.3px;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .info-icon {
+            width: 44px;
+            height: 44px;
+            background: #F5F0E6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8B7D3C;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .info-text {
+            flex: 1;
+            font-size: 1rem;
+            color: #2d2d2d;
+            text-decoration: none;
+            direction: ltr;
+            text-align: right;
+            font-weight: 500;
+            word-break: break-word;
+        }
+
+        .info-text a {
+            text-decoration: none;
+            color: #2d2d2d;
+            transition: color 0.2s;
+        }
+
+        .info-text a:hover {
+            color: #C9A96E;
+        }
+
+        .whatsapp-btn {
+            background-color: #25D366;
+            color: white !important;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .vcf-btn, .nfc-btn {
+            background-color: #8B7D3C;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .vcf-btn:hover, .nfc-btn:hover {
+            background-color: #6b5e2e;
+            transform: scale(0.97);
+        }
+
+        .nfc-btn {
+            background-color: #2c5f2d;
+        }
+
+        .nfc-btn:hover {
+            background-color: #1f451f;
+        }
+
+        .website-link {
+            background: none;
+            border: 1px solid #C9A96E;
+            color: #8B7D3C !important;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .website-link:hover {
+            background: #C9A96E20;
+            border-color: #8B7D3C;
+        }
+
+        hr {
+            margin: 20px 0;
+            border: none;
+            height: 1px;
+            background: linear-gradient(to left, #e0d5c0, #C9A96E, #e0d5c0);
+        }
+
+        .footer-note {
+            font-size: 0.7rem;
+            color: #aaa;
+            text-align: center;
+            margin-top: 12px;
+        }
+
+        /* تحسين للأجهزة اللمسية */
+        button, a {
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        @media (max-width: 500px) {
+            .card-body {
+                padding: 20px;
+            }
+            .contact-name {
+                font-size: 1.4rem;
+            }
+            .info-icon {
+                width: 38px;
+                height: 38px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="business-card">
+        <div class="card-header">
+            <div class="logo-text">باسقات الجزيرة</div>
+            <div class="logo-sub">BASQAT ALJAZEERA</div>
+        </div>
+        <div class="card-body">
+            <div class="contact-name">عبدالله البلوشي</div>
+            <div class="job-title">منسق المعرض</div>
+
+            <!-- رقم الجوال -->
+            <div class="info-row">
+                <div class="info-icon"><i class="fas fa-mobile-alt"></i></div>
+                <div class="info-text" dir="ltr">+966 55 582 2559</div>
+            </div>
+
+            <!-- حفظ VCF -->
+            <div class="info-row">
+                <div class="info-icon"><i class="fas fa-address-card"></i></div>
+                <div class="info-text">
+                    <button class="vcf-btn" id="saveVcfBtn">
+                        <i class="fas fa-download"></i> حفظ جهة اتصال (VCF)
+                    </button>
+                </div>
+            </div>
+
+            <!-- واتساب -->
+            <div class="info-row">
+                <div class="info-icon"><i class="fab fa-whatsapp"></i></div>
+                <div class="info-text">
+                    <a href="https://wa.me/966555822559?text=مرحباً%20عبدالله،%20تواصلت%20معك%20من%20البطاقة%20التعريفية" target="_blank" class="whatsapp-btn">
+                        <i class="fab fa-whatsapp"></i> واتساب المباشر
+                    </a>
+                </div>
+            </div>
+
+            <!-- البريد الإلكتروني -->
+            <div class="info-row">
+                <div class="info-icon"><i class="far fa-envelope"></i></div>
+                <div class="info-text">
+                    <a href="mailto:abdullah@basqat.com.sa">abdullah@basqat.com.sa</a>
+                </div>
+            </div>
+
+            <!-- موقع الويب (اكتشف أكثر) -->
+            <div class="info-row">
+                <div class="info-icon"><i class="fas fa-globe"></i></div>
+                <div class="info-text">
+                    <a href="https://basiqataljazira.com/ar" target="_blank" class="website-link">
+                        <i class="fas fa-external-link-alt"></i> اكتشف أكثر
+                    </a>
+                </div>
+            </div>
+
+            <!-- زر NFC (للكتابة على بطاقة NFC) -->
+            <div class="info-row">
+                <div class="info-icon"><i class="fas fa-tachometer-alt"></i></div>
+                <div class="info-text">
+                    <button class="nfc-btn" id="nfcWriteBtn">
+                        <i class="fas fa-rss"></i> كتابة البيانات على NFC
+                    </button>
+                    <span style="font-size: 0.7rem; display: block; margin-top: 5px; color: #888;">(لأجهزة Android مع دعم NFC)</span>
+                </div>
+            </div>
+
+            <hr />
+            <div class="footer-note">
+                <i class="fas fa-tree"></i> باسقات الجزيرة – جودة خضراء بلا حدود
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // بيانات الاتصال
+        const contactData = {
+            fullName: "عبدالله البلوشي",
+            phone: "+966555822559",
+            phoneRaw: "966555822559",
+            email: "abdullah@basqat.com.sa",
+            company: "باسقات الجزيرة",
+            jobTitle: "منسق المعرض",
+            website: "https://basiqataljazira.com/ar"
+        };
+
+        // إنشاء ملف VCF
+        function generateVCF() {
+            return `BEGIN:VCARD
+VERSION:3.0
+FN:${contactData.fullName}
+ORG:${contactData.company}
+TITLE:${contactData.jobTitle}
+TEL;TYPE=CELL:${contactData.phone}
+EMAIL:${contactData.email}
+URL:${contactData.website}
+END:VCARD`;
+        }
+
+        // زر حفظ VCF
+        document.getElementById('saveVcfBtn').addEventListener('click', function () {
+            const vcfData = generateVCF();
+            const blob = new Blob([vcfData], { type: 'text/vcard' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'abdullah_basqat.vcf';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        // زر NFC (لأجهزة أندرويد)
+        const nfcBtn = document.getElementById('nfcWriteBtn');
+        if ('NDEFReader' in window) {
+            nfcBtn.addEventListener('click', async () => {
+                try {
+                    const writer = new NDEFReader();
+                    await writer.write({
+                        records: [{
+                            recordType: "text",
+                            data: `الاسم: ${contactData.fullName}\nشركة: ${contactData.company}\nمنصب: ${contactData.jobTitle}\nجوال: ${contactData.phone}\nبريد: ${contactData.email}\nرابط: ${contactData.website}`
+                        }]
+                    });
+                    alert("✅ تمت كتابة البيانات على بطاقة NFC بنجاح!");
+                } catch (err) {
+                    alert("❌ فشل الكتابة: تأكد من وجود بطاقة NFC قريبة ومن تفعيل NFC في هاتفك.\n" + err);
+                }
+            });
+        } else {
+            nfcBtn.style.opacity = "0.6";
+            nfcBtn.style.backgroundColor = "#aaa";
+            nfcBtn.disabled = true;
+            nfcBtn.title = "متصفحك لا يدعم NFC (يعمل فقط على أندرويد مع Chrome)";
+            nfcBtn.innerHTML = '<i class="fas fa-ban"></i> NFC غير مدعوم';
+        }
+
+        // كشف الـ NFC تلقائياً عندما يقرأ أحد البطاقة (محاكاة ذكية)
+        // إذا تم وضع الهاتف على Tag NFC تحتوي رابط البطاقة، يمكن توجيهه لهذه الصفحة.
+        // هنا نضيف أيضاً تحسين لربط NFC خارجياً.
+        if ('NDEFReader' in window) {
+            try {
+                const reader = new NDEFReader();
+                reader.scan().then(() => {
+                    console.log("✅ جاهز لقراءة NFC (للاستقبال)");
+                }).catch(err => console.log("NFC scan not allowed", err));
+            } catch(e) {}
+        }
+    </script>
+</body>
+</html>
