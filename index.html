@@ -26,9 +26,9 @@
         .business-card {
             width: 650px;
             max-width: 100%;
-            background: #FFFFFF;
+            background: #D99A58;  /* اللون الجديد */
             border-radius: 32px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(139, 125, 60, 0.2);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
             overflow: hidden;
             transition: transform 0.25s ease;
         }
@@ -60,25 +60,26 @@
 
         .card-body {
             padding: 28px 30px;
-            background: #FFFFFF;
+            background: #D99A58;  /* اللون الجديد */
         }
 
         .contact-name {
             font-size: 1.75rem;
             font-weight: 700;
-            color: #1e2a1a;
-            border-right: 5px solid #C9A96E;
+            color: #2c2c2c;
+            border-right: 5px solid #fff3e0;
             padding-right: 16px;
             margin-bottom: 8px;
         }
 
         .job-title {
             font-size: 1rem;
-            color: #8B7D3C;
+            color: #2c2c2c;
             font-weight: 600;
             margin-bottom: 25px;
             padding-right: 21px;
             letter-spacing: 0.3px;
+            opacity: 0.85;
         }
 
         .info-row {
@@ -92,7 +93,7 @@
         .info-icon {
             width: 44px;
             height: 44px;
-            background: #F5F0E6;
+            background: rgba(255, 243, 224, 0.9);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -105,7 +106,7 @@
         .info-text {
             flex: 1;
             font-size: 1rem;
-            color: #2d2d2d;
+            color: #2c2c2c;
             text-decoration: none;
             font-weight: 500;
             word-break: break-word;
@@ -113,12 +114,12 @@
 
         .info-text a {
             text-decoration: none;
-            color: #2d2d2d;
+            color: #2c2c2c;
             transition: color 0.2s;
         }
 
         .info-text a:hover {
-            color: #C9A96E;
+            color: #fff3e0;
         }
 
         .whatsapp-btn {
@@ -133,8 +134,13 @@
             font-weight: 600;
         }
 
-        .vcf-btn, .nfc-btn {
-            background-color: #8B7D3C;
+        .whatsapp-btn:hover {
+            background-color: #1da15a;
+            color: white !important;
+        }
+
+        .vcf-btn {
+            background-color: #5d3a1a;
             color: white;
             padding: 8px 18px;
             border-radius: 40px;
@@ -149,23 +155,15 @@
             transition: 0.2s;
         }
 
-        .vcf-btn:hover, .nfc-btn:hover {
-            background-color: #6b5e2e;
+        .vcf-btn:hover {
+            background-color: #3d2610;
             transform: scale(0.97);
         }
 
-        .nfc-btn {
-            background-color: #2c5f2d;
-        }
-
-        .nfc-btn:hover {
-            background-color: #1f451f;
-        }
-
         .website-link {
-            background: none;
-            border: 1px solid #C9A96E;
-            color: #8B7D3C !important;
+            background: rgba(255, 243, 224, 0.3);
+            border: 1px solid #5d3a1a;
+            color: #5d3a1a !important;
             padding: 6px 14px;
             border-radius: 40px;
             font-size: 0.8rem;
@@ -176,22 +174,24 @@
         }
 
         .website-link:hover {
-            background: #C9A96E20;
-            border-color: #8B7D3C;
+            background: rgba(255, 243, 224, 0.6);
+            border-color: #3d2610;
         }
 
         hr {
             margin: 20px 0;
             border: none;
-            height: 1px;
-            background: linear-gradient(to left, #e0d5c0, #C9A96E, #e0d5c0);
+            height: 2px;
+            background: linear-gradient(to left, #fff3e0, #5d3a1a, #fff3e0);
+            border-radius: 5px;
         }
 
         .footer-note {
             font-size: 0.7rem;
-            color: #aaa;
+            color: #2c2c2c;
             text-align: center;
             margin-top: 12px;
+            opacity: 0.7;
         }
 
         @media (max-width: 500px) {
@@ -256,19 +256,6 @@
                 </div>
             </div>
 
-            <!-- زر NFC (يدعم أندرويد، ولقراءة NFC على آيفون) -->
-            <div class="info-row">
-                <div class="info-icon"><i class="fas fa-rss"></i></div>
-                <div class="info-text">
-                    <button class="nfc-btn" id="nfcWriteBtn">
-                        <i class="fas fa-tag"></i> كتابة البيانات على NFC
-                    </button>
-                    <div style="font-size: 0.65rem; color: #888; margin-top: 5px;">
-                        📱 أندرويد: يكتب على البطاقة • 📱 آيفون: يقرأ فقط (عبر قارئ NFC)
-                    </div>
-                </div>
-            </div>
-
             <hr />
             <div class="footer-note">
                 <i class="fas fa-tree"></i> باسقات الجزيرة – جودة خضراء بلا حدود
@@ -300,7 +287,7 @@ URL:${contactData.website}
 END:VCARD`;
         }
 
-        // حفظ VCF
+        // زر حفظ VCF
         document.getElementById('saveVcfBtn').addEventListener('click', function () {
             const vcfData = generateVCF();
             const blob = new Blob([vcfData], { type: 'text/vcard' });
@@ -312,38 +299,6 @@ END:VCARD`;
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-        });
-
-        // NFC: كتابة البيانات (أندرويد فقط، وآيفون يعطي إرشاداً للقراءة)
-        const nfcBtn = document.getElementById('nfcWriteBtn');
-        
-        // التحقق من دعم الكتابة على NFC
-        const isWritingSupported = 'NDEFReader' in window && 'write' in window.NDEFReader.prototype;
-        
-        nfcBtn.addEventListener('click', async () => {
-            // إذا كان الجهاز لا يدعم الكتابة (مثل آيفون)
-            if (!isWritingSupported) {
-                alert("📱 جهازك لا يدعم كتابة NFC.\n\nلكن يمكنك:\n• على أندرويد: استخدم هذا الزر لكتابة البيانات على بطاقة NFC فارغة.\n• على آيفون: يمكنك قراءة بطاقة NFC مكتوبة مسبقاً باستخدام تطبيق \"اختصارات\" أو قارئ NFC.");
-                return;
-            }
-            
-            // دعم الكتابة (أندرويد)
-            try {
-                const ndef = new NDEFReader();
-                await ndef.write({
-                    records: [{
-                        recordType: "text",
-                        data: `الاسم: ${contactData.fullName}\nالشركة: ${contactData.company}\nالمنصب: ${contactData.jobTitle}\nالجوال: ${contactData.phone}\nالبريد: ${contactData.email}\nالموقع: ${contactData.website}`
-                    }]
-                });
-                alert("✅ تمت كتابة البيانات على بطاقة NFC بنجاح!");
-            } catch (err) {
-                if (err.message.includes("abort")) {
-                    alert("⚠️ تم إلغاء العملية.");
-                } else {
-                    alert("❌ فشل الكتابة. تأكد من:\n1. تفعيل NFC في إعدادات الهاتف\n2. قرب البطاقة من الجزء الخلفي للهاتف\n3. البطاقة قابلة للكتابة");
-                }
-            }
         });
     </script>
 </body>
