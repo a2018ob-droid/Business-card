@@ -107,8 +107,6 @@
             font-size: 1rem;
             color: #2d2d2d;
             text-decoration: none;
-            direction: ltr;
-            text-align: right;
             font-weight: 500;
             word-break: break-word;
         }
@@ -196,12 +194,6 @@
             margin-top: 12px;
         }
 
-        /* تحسين للأجهزة اللمسية */
-        button, a {
-            cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-        }
-
         @media (max-width: 500px) {
             .card-body {
                 padding: 20px;
@@ -225,12 +217,6 @@
         <div class="card-body">
             <div class="contact-name">عبدالله البلوشي</div>
             <div class="job-title">منسق المعرض</div>
-
-            <!-- رقم الجوال -->
-            <div class="info-row">
-                <div class="info-icon"><i class="fas fa-mobile-alt"></i></div>
-                <div class="info-text" dir="ltr">+966 55 582 2559</div>
-            </div>
 
             <!-- حفظ VCF -->
             <div class="info-row">
@@ -260,7 +246,7 @@
                 </div>
             </div>
 
-            <!-- موقع الويب (اكتشف أكثر) -->
+            <!-- موقع الويب -->
             <div class="info-row">
                 <div class="info-icon"><i class="fas fa-globe"></i></div>
                 <div class="info-text">
@@ -270,14 +256,16 @@
                 </div>
             </div>
 
-            <!-- زر NFC (للكتابة على بطاقة NFC) -->
+            <!-- زر NFC (يدعم أندرويد، ولقراءة NFC على آيفون) -->
             <div class="info-row">
-                <div class="info-icon"><i class="fas fa-tachometer-alt"></i></div>
+                <div class="info-icon"><i class="fas fa-rss"></i></div>
                 <div class="info-text">
                     <button class="nfc-btn" id="nfcWriteBtn">
-                        <i class="fas fa-rss"></i> كتابة البيانات على NFC
+                        <i class="fas fa-tag"></i> كتابة البيانات على NFC
                     </button>
-                    <span style="font-size: 0.7rem; display: block; margin-top: 5px; color: #888;">(لأجهزة Android مع دعم NFC)</span>
+                    <div style="font-size: 0.65rem; color: #888; margin-top: 5px;">
+                        📱 أندرويد: يكتب على البطاقة • 📱 آيفون: يقرأ فقط (عبر قارئ NFC)
+                    </div>
                 </div>
             </div>
 
@@ -293,7 +281,6 @@
         const contactData = {
             fullName: "عبدالله البلوشي",
             phone: "+966555822559",
-            phoneRaw: "966555822559",
             email: "abdullah@basqat.com.sa",
             company: "باسقات الجزيرة",
             jobTitle: "منسق المعرض",
@@ -313,7 +300,7 @@ URL:${contactData.website}
 END:VCARD`;
         }
 
-        // زر حفظ VCF
+        // حفظ VCF
         document.getElementById('saveVcfBtn').addEventListener('click', function () {
             const vcfData = generateVCF();
             const blob = new Blob([vcfData], { type: 'text/vcard' });
@@ -327,42 +314,37 @@ END:VCARD`;
             URL.revokeObjectURL(url);
         });
 
-        // زر NFC (لأجهزة أندرويد)
+        // NFC: كتابة البيانات (أندرويد فقط، وآيفون يعطي إرشاداً للقراءة)
         const nfcBtn = document.getElementById('nfcWriteBtn');
-        if ('NDEFReader' in window) {
-            nfcBtn.addEventListener('click', async () => {
-                try {
-                    const writer = new NDEFReader();
-                    await writer.write({
-                        records: [{
-                            recordType: "text",
-                            data: `الاسم: ${contactData.fullName}\nشركة: ${contactData.company}\nمنصب: ${contactData.jobTitle}\nجوال: ${contactData.phone}\nبريد: ${contactData.email}\nرابط: ${contactData.website}`
-                        }]
-                    });
-                    alert("✅ تمت كتابة البيانات على بطاقة NFC بنجاح!");
-                } catch (err) {
-                    alert("❌ فشل الكتابة: تأكد من وجود بطاقة NFC قريبة ومن تفعيل NFC في هاتفك.\n" + err);
-                }
-            });
-        } else {
-            nfcBtn.style.opacity = "0.6";
-            nfcBtn.style.backgroundColor = "#aaa";
-            nfcBtn.disabled = true;
-            nfcBtn.title = "متصفحك لا يدعم NFC (يعمل فقط على أندرويد مع Chrome)";
-            nfcBtn.innerHTML = '<i class="fas fa-ban"></i> NFC غير مدعوم';
-        }
-
-        // كشف الـ NFC تلقائياً عندما يقرأ أحد البطاقة (محاكاة ذكية)
-        // إذا تم وضع الهاتف على Tag NFC تحتوي رابط البطاقة، يمكن توجيهه لهذه الصفحة.
-        // هنا نضيف أيضاً تحسين لربط NFC خارجياً.
-        if ('NDEFReader' in window) {
+        
+        // التحقق من دعم الكتابة على NFC
+        const isWritingSupported = 'NDEFReader' in window && 'write' in window.NDEFReader.prototype;
+        
+        nfcBtn.addEventListener('click', async () => {
+            // إذا كان الجهاز لا يدعم الكتابة (مثل آيفون)
+            if (!isWritingSupported) {
+                alert("📱 جهازك لا يدعم كتابة NFC.\n\nلكن يمكنك:\n• على أندرويد: استخدم هذا الزر لكتابة البيانات على بطاقة NFC فارغة.\n• على آيفون: يمكنك قراءة بطاقة NFC مكتوبة مسبقاً باستخدام تطبيق \"اختصارات\" أو قارئ NFC.");
+                return;
+            }
+            
+            // دعم الكتابة (أندرويد)
             try {
-                const reader = new NDEFReader();
-                reader.scan().then(() => {
-                    console.log("✅ جاهز لقراءة NFC (للاستقبال)");
-                }).catch(err => console.log("NFC scan not allowed", err));
-            } catch(e) {}
-        }
+                const ndef = new NDEFReader();
+                await ndef.write({
+                    records: [{
+                        recordType: "text",
+                        data: `الاسم: ${contactData.fullName}\nالشركة: ${contactData.company}\nالمنصب: ${contactData.jobTitle}\nالجوال: ${contactData.phone}\nالبريد: ${contactData.email}\nالموقع: ${contactData.website}`
+                    }]
+                });
+                alert("✅ تمت كتابة البيانات على بطاقة NFC بنجاح!");
+            } catch (err) {
+                if (err.message.includes("abort")) {
+                    alert("⚠️ تم إلغاء العملية.");
+                } else {
+                    alert("❌ فشل الكتابة. تأكد من:\n1. تفعيل NFC في إعدادات الهاتف\n2. قرب البطاقة من الجزء الخلفي للهاتف\n3. البطاقة قابلة للكتابة");
+                }
+            }
+        });
     </script>
 </body>
 </html>
